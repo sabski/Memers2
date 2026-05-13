@@ -195,7 +195,8 @@ function setupInput() {
 
   document.addEventListener('keydown', (e) => {
     if (GameState.state === 'MENU' || GameState.state === 'GAME_OVER') {
-      if (e.key === 'Enter') {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
         if (GameState.state === 'MENU') {
           UI.showScreen('CHARACTER_SELECT');
           GameState.state = 'CHARACTER_SELECT';
@@ -215,12 +216,52 @@ function setupInput() {
         doPlayerTurn(dx, dy);
       } else if (e.key === ' ' || e.key === '.') {
         e.preventDefault();
-        doWaitTurn();
+        const adjacent = GameState.dungeon.entities.find(en =>
+          en.alive && chebyshev(GameState.player.x, GameState.player.y, en.x, en.y) === 1
+        );
+        if (adjacent) {
+          doPlayerTurn(adjacent.x - GameState.player.x, adjacent.y - GameState.player.y);
+        } else {
+          doWaitTurn();
+        }
       }
     }
   });
 
   document.getElementById('btn-restart').addEventListener('click', resetGame);
+}
+
+function setupDpad() {
+  const bindings = [
+    ['btn-up',    0, -1],
+    ['btn-down',  0,  1],
+    ['btn-left', -1,  0],
+    ['btn-right', 1,  0],
+  ];
+  for (const [id, dx, dy] of bindings) {
+    const btn = document.getElementById(id);
+    if (!btn) continue;
+    btn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      if (GameState.state === 'PLAYING') doPlayerTurn(dx, dy);
+    }, { passive: false });
+    // Also support mouse clicks for desktop testing
+    btn.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      if (GameState.state === 'PLAYING') doPlayerTurn(dx, dy);
+    });
+  }
+  const waitBtn = document.getElementById('btn-wait');
+  if (waitBtn) {
+    waitBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      if (GameState.state === 'PLAYING') doWaitTurn();
+    }, { passive: false });
+    waitBtn.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      if (GameState.state === 'PLAYING') doWaitTurn();
+    });
+  }
 }
 
 function resetGame() {
@@ -240,6 +281,7 @@ window.addEventListener('DOMContentLoaded', () => {
   UI.showScreen('MENU');
   GameState.state = 'MENU';
   setupInput();
+  setupDpad();
 
   // Wire character select state tracking
   const origSelectChar = GameState.selectCharacter.bind(GameState);
