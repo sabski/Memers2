@@ -193,10 +193,15 @@ function setupInput() {
     'W': [0, -1], 'S': [0, 1], 'A': [-1, 0], 'D': [1, 0]
   };
 
-  document.addEventListener('keydown', (e) => {
+  window.addEventListener('keydown', (e) => {
+    // Prevent browser scroll for arrow keys and space unconditionally
+    if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'ArrowDown' ||
+        e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      e.preventDefault();
+    }
+
     if (GameState.state === 'MENU' || GameState.state === 'GAME_OVER') {
       if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
         if (GameState.state === 'MENU') {
           UI.showScreen('CHARACTER_SELECT');
           GameState.state = 'CHARACTER_SELECT';
@@ -211,11 +216,9 @@ function setupInput() {
 
     if (GameState.state === 'PLAYING') {
       if (DIR_MAP[e.key]) {
-        e.preventDefault();
         const [dx, dy] = DIR_MAP[e.key];
         doPlayerTurn(dx, dy);
       } else if (e.key === ' ' || e.key === '.') {
-        e.preventDefault();
         const adjacent = GameState.dungeon.entities.find(en =>
           en.alive && chebyshev(GameState.player.x, GameState.player.y, en.x, en.y) === 1
         );
@@ -229,39 +232,6 @@ function setupInput() {
   });
 
   document.getElementById('btn-restart').addEventListener('click', resetGame);
-}
-
-function setupDpad() {
-  const bindings = [
-    ['btn-up',    0, -1],
-    ['btn-down',  0,  1],
-    ['btn-left', -1,  0],
-    ['btn-right', 1,  0],
-  ];
-  for (const [id, dx, dy] of bindings) {
-    const btn = document.getElementById(id);
-    if (!btn) continue;
-    btn.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      if (GameState.state === 'PLAYING') doPlayerTurn(dx, dy);
-    }, { passive: false });
-    // Also support mouse clicks for desktop testing
-    btn.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      if (GameState.state === 'PLAYING') doPlayerTurn(dx, dy);
-    });
-  }
-  const waitBtn = document.getElementById('btn-wait');
-  if (waitBtn) {
-    waitBtn.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      if (GameState.state === 'PLAYING') doWaitTurn();
-    }, { passive: false });
-    waitBtn.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      if (GameState.state === 'PLAYING') doWaitTurn();
-    });
-  }
 }
 
 function resetGame() {
@@ -281,7 +251,6 @@ window.addEventListener('DOMContentLoaded', () => {
   UI.showScreen('MENU');
   GameState.state = 'MENU';
   setupInput();
-  setupDpad();
 
   // Wire character select state tracking
   const origSelectChar = GameState.selectCharacter.bind(GameState);
