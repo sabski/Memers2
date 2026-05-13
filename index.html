@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEME DUNGEON LOL</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Canvas layer (always present, behind overlays) -->
+  <div id="canvas-container">
+    <canvas id="gameCanvas" width="1600" height="1216"></canvas>
+  </div>
+
+  <!-- MENU screen -->
+  <div id="screen-menu" class="screen">
+    <h1 class="title-text">MEME<br>DUNGEON</h1>
+    <div class="title-chars">🐕 🐱 🦆 🐸 🦝</div>
+    <p class="subtitle">a very serious roguelike</p>
+    <p class="blink press-enter">PRESS ENTER TO START</p>
+    <div class="menu-footer">survive 5 floors &bull; kill big chungus &bull; become legend</div>
+  </div>
+
+  <!-- CHARACTER SELECT screen -->
+  <div id="screen-character_select" class="screen">
+    <h2>CHOOSE YOUR WARRIOR</h2>
+    <p class="select-subtitle">each is more unhinged than the last</p>
+    <div id="char-cards"></div>
+    <p class="select-hint">click to select</p>
+  </div>
+
+  <!-- GAME OVER screen -->
+  <div id="screen-game_over" class="screen">
+    <h1 id="death-title">YOU DIED</h1>
+    <div id="death-emoji">💀</div>
+    <div id="death-quip"></div>
+    <div id="death-score"></div>
+    <button id="btn-restart">TRY AGAIN LOL</button>
+    <p class="restart-hint">or press Enter</p>
+  </div>
+
+  <!-- HUD (visible during PLAYING state) -->
+  <div id="hud" style="display:none">
+    <div id="hud-top">
+      <div id="char-info"></div>
+      <div id="floor-display">FLOOR 1</div>
+      <div id="hp-section">
+        <span id="hp-text">HP: 30/30</span>
+        <div id="hp-bar"><div id="hp-bar-fill"></div></div>
+      </div>
+    </div>
+    <div id="stats-display"></div>
+    <div id="combat-log">
+      <div class="log-line" id="log-0"></div>
+      <div class="log-line" id="log-1"></div>
+      <div class="log-line" id="log-2"></div>
+      <div class="log-line" id="log-3"></div>
+      <div class="log-line" id="log-4"></div>
+    </div>
+    <div id="controls-hint">WASD / ↑↓←→ move &bull; SPACE wait &bull; walk into enemies to attack</div>
+  </div>
+
+  <!-- Splash text container -->
+  <div id="splash-container"></div>
+
+  <!-- Scripts in dependency order -->
+  <script src="js/characters.js"></script>
+  <script src="js/enemies.js"></script>
+  <script src="js/items.js"></script>
+  <script src="js/combat.js"></script>
+  <script src="js/dungeon.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
