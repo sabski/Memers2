@@ -10,7 +10,7 @@
 
   <!-- Canvas layer (always present, behind overlays) -->
   <div id="canvas-container">
-    <canvas id="gameCanvas" width="1600" height="1216"></canvas>
+    <canvas id="gameCanvas" width="800" height="608"></canvas>
   </div>
 
   <!-- MENU screen -->
@@ -18,7 +18,7 @@
     <h1 class="title-text">MEME<br>DUNGEON</h1>
     <div class="title-chars">🐕 🐱 🦆 🐸 🦝</div>
     <p class="subtitle">a very serious roguelike</p>
-    <p class="blink press-enter">PRESS ENTER TO START</p>
+    <p class="blink press-enter">PRESS ENTER OR SPACE</p>
     <div class="menu-footer">survive 5 floors &bull; kill big chungus &bull; become legend</div>
   </div>
 
@@ -58,7 +58,18 @@
       <div class="log-line" id="log-3"></div>
       <div class="log-line" id="log-4"></div>
     </div>
-    <div id="controls-hint">WASD / ↑↓←→ move &bull; SPACE wait &bull; walk into enemies to attack</div>
+    <div id="controls-hint">WASD / ↑↓←→ move &bull; SPACE attack/wait &bull; walk into enemies to attack</div>
+  </div>
+
+  <!-- Mobile D-pad (shown via CSS on narrow screens, hidden when not playing) -->
+  <div id="dpad" style="display:none">
+    <div id="dpad-grid">
+      <button class="dpad-btn" id="btn-up">▲</button>
+      <button class="dpad-btn" id="btn-left">◀</button>
+      <button class="dpad-btn" id="btn-wait">⏸</button>
+      <button class="dpad-btn" id="btn-right">▶</button>
+      <button class="dpad-btn" id="btn-down">▼</button>
+    </div>
   </div>
 
   <!-- Splash text container -->

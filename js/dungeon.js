@@ -2,6 +2,8 @@ const TILE = { WALL: 0, FLOOR: 1, STAIRS: 2 };
 const TILE_SIZE = 32;
 const DUNGEON_W = 50;
 const DUNGEON_H = 38;
+const VIEWPORT_W = 25;
+const VIEWPORT_H = 19;
 
 function generateDungeon(floor, player) {
   const tiles = [];
