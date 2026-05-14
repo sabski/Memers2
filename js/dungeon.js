@@ -51,6 +51,8 @@ function generateDungeon(floor, player) {
   const spawnRoom = rooms[0];
   const exitRoom = rooms[rooms.length - 1];
   const spawnPoint = { x: spawnRoom.cx, y: spawnRoom.cy };
+  // P2 spawns slightly offset from P1 in the same room
+  const p2SpawnPoint = { x: spawnRoom.cx + 1, y: spawnRoom.cy };
   const stairsPos = { x: exitRoom.cx, y: exitRoom.cy };
   tiles[stairsPos.y][stairsPos.x] = TILE.STAIRS;
 
@@ -96,7 +98,7 @@ function generateDungeon(floor, player) {
     items.push(createItem(key, pos.x, pos.y));
   }
 
-  return { width: DUNGEON_W, height: DUNGEON_H, tiles, rooms, entities, items, explored, visible, spawnPoint, stairsPos };
+  return { width: DUNGEON_W, height: DUNGEON_H, tiles, rooms, entities, items, explored, visible, spawnPoint, p2SpawnPoint, stairsPos };
 }
 
 function carveRoom(tiles, x, y, w, h) {
@@ -230,6 +232,97 @@ function tryMoveEnemy(dungeon, player, enemy, dx, dy) {
   enemy.x = nx;
   enemy.y = ny;
   return true;
+}
+
+// Multiplayer enemy turns — takes both players so enemies don't walk into either
+function runEnemyTurnsMP(dungeon, p1, p2) {
+  const messages = [];
+  const activePlayers = [p1, p2].filter(p => p && p.alive);
+  for (const enemy of dungeon.entities) {
+    if (!enemy.alive) continue;
+    if (activePlayers.length === 0) continue;
+
+    // Aggro to nearest player
+    let nearest = null;
+    let nearestDist = Infinity;
+    for (const p of activePlayers) {
+      const d = chebyshev(enemy.x, enemy.y, p.x, p.y);
+      if (d < nearestDist) { nearestDist = d; nearest = p; }
+    }
+    if (!nearest) continue;
+
+    if (nearestDist <= enemy.aggroRange) enemy.aiState = 'aggro';
+    if (enemy.aiState !== 'aggro') continue;
+
+    if (nearestDist === 1) {
+      const result = enemyAttack(enemy, nearest);
+      messages.push({ type: 'enemy_attack', enemy, target: nearest, result });
+    } else {
+      const dx = Math.sign(nearest.x - enemy.x);
+      const dy = Math.sign(nearest.y - enemy.y);
+      // Pass p2 as extra blocked position
+      const moved = tryMoveEnemyMP(dungeon, activePlayers, enemy, dx, dy);
+      if (!moved) {
+        tryMoveEnemyMP(dungeon, activePlayers, enemy, dx, 0) ||
+        tryMoveEnemyMP(dungeon, activePlayers, enemy, 0, dy);
+      }
+    }
+  }
+  return messages;
+}
+
+function tryMoveEnemyMP(dungeon, players, enemy, dx, dy) {
+  if (dx === 0 && dy === 0) return false;
+  const nx = enemy.x + dx;
+  const ny = enemy.y + dy;
+  if (nx < 0 || ny < 0 || nx >= dungeon.width || ny >= dungeon.height) return false;
+  const tile = dungeon.tiles[ny][nx];
+  if (tile === TILE.WALL) return false;
+  for (const p of players) {
+    if (p.x === nx && p.y === ny) return false;
+  }
+  if (dungeon.entities.some(e => e.alive && e !== enemy && e.x === nx && e.y === ny)) return false;
+  enemy.x = nx;
+  enemy.y = ny;
+  return true;
+}
+
+// Minimal serialization for sending dungeon state to P2 on join
+function serializeDungeon(dungeon) {
+  return JSON.stringify({
+    width: dungeon.width,
+    height: dungeon.height,
+    tiles: dungeon.tiles,
+    rooms: dungeon.rooms,
+    entities: dungeon.entities.map(e => ({
+      id: e.id, enemyKey: e.enemyKey, x: e.x, y: e.y,
+      hp: e.hp, maxHp: e.maxHp, atk: e.atk, def: e.def,
+      emoji: e.emoji, name: e.name, deathQuip: e.deathQuip,
+      isBoss: e.isBoss, aggroRange: e.aggroRange, aiState: e.aiState,
+      alive: e.alive
+    })),
+    items: dungeon.items.map(i => ({
+      id: i.id, itemKey: i.itemKey, x: i.x, y: i.y,
+      emoji: i.emoji, name: i.name, desc: i.desc, splash: i.splash,
+      picked: i.picked
+    })),
+    explored: dungeon.explored,
+    visible: dungeon.visible,
+    spawnPoint: dungeon.spawnPoint,
+    p2SpawnPoint: dungeon.p2SpawnPoint,
+    stairsPos: dungeon.stairsPos
+  });
+}
+
+function deserializeDungeon(json) {
+  const d = JSON.parse(json);
+  // Reconstruct apply functions for items (not serialized)
+  for (const item of d.items) {
+    if (ITEMS[item.itemKey]) {
+      item.apply = ITEMS[item.itemKey].apply;
+    }
+  }
+  return d;
 }
 
 function chebyshev(x1, y1, x2, y2) {

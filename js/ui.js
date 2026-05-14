@@ -41,6 +41,39 @@ const UI = (() => {
     canvas.style.display = isPlaying ? 'block' : 'none';
   }
 
+  function updateMPHUD(opponent, isMyTurn, mode) {
+    const oppSection = document.getElementById('opponent-section');
+    const turnEl = document.getElementById('turn-indicator');
+
+    if (!opponent) {
+      oppSection.style.display = 'none';
+      turnEl.style.display = 'none';
+      return;
+    }
+
+    oppSection.style.display = 'flex';
+    turnEl.style.display = 'block';
+
+    const hp = Math.max(0, opponent.hp);
+    const pct = (hp / opponent.maxHp) * 100;
+    document.getElementById('opponent-text').textContent =
+      `${opponent.emoji} ${opponent.name}: ${hp}/${opponent.maxHp}`;
+    document.getElementById('opponent-bar-fill').style.width = pct + '%';
+
+    if (isMyTurn) {
+      turnEl.textContent = 'YOUR TURN';
+      turnEl.className = 'your-turn';
+    } else {
+      turnEl.textContent = "OPPONENT'S TURN";
+      turnEl.className = 'their-turn';
+    }
+  }
+
+  function setLobbyStatus(text, color) {
+    const el = document.getElementById('lobby-status');
+    if (el) { el.textContent = text; el.style.color = color || '#00FF88'; }
+  }
+
   function updateHUD(player, floor) {
     const pct = Math.max(0, player.hp / player.maxHp) * 100;
     document.getElementById('hp-bar-fill').style.width = pct + '%';
@@ -117,5 +150,5 @@ const UI = (() => {
   function randomQuip() { return QUIPS[Math.floor(Math.random() * QUIPS.length)]; }
   function randomCritQuip() { return CRIT_QUIPS[Math.floor(Math.random() * CRIT_QUIPS.length)]; }
 
-  return { buildCharCards, showScreen, updateHUD, addToLog, clearLog, spawnSplash, showDeathScreen, randomQuip, randomCritQuip };
+  return { buildCharCards, showScreen, updateHUD, updateMPHUD, setLobbyStatus, addToLog, clearLog, spawnSplash, showDeathScreen, randomQuip, randomCritQuip };
 })();
