@@ -36,12 +36,9 @@ const UI = (() => {
 
     const hud = document.getElementById('hud');
     const canvas = document.getElementById('canvas-container');
-    const dpad = document.getElementById('dpad');
     const isPlaying = stateName === 'PLAYING';
     hud.style.display = isPlaying ? 'block' : 'none';
     canvas.style.display = isPlaying ? 'block' : 'none';
-    // D-pad: '' defers to CSS media query (shows on narrow screens); 'none' hides always
-    if (dpad) dpad.style.display = isPlaying ? '' : 'none';
   }
 
   function updateHUD(player, floor) {

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEME DUNGEON — TESTS</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0a0a;
+      font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+      color: #FFD700;
+      padding: 24px 32px;
+      max-width: 860px;
+    }
+
+    h1 {
+      font-family: Impact, Haettenschweiler, sans-serif;
+      font-size: 48px;
+      color: #FF00FF;
+      -webkit-text-stroke: 3px #000;
+      text-shadow: 4px 4px 0 #000;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    #summary {
+      font-family: Impact, sans-serif;
+      font-size: 24px;
+      padding: 12px 16px;
+      border: 3px solid #444;
+      margin-bottom: 24px;
+      letter-spacing: 1px;
+    }
+    #summary.all-pass { border-color: #00FF00; color: #00FF00; }
+    #summary.has-fail { border-color: #FF3333; color: #FF3333; }
+
+    .suite-name {
+      font-family: Impact, sans-serif;
+      font-size: 20px;
+      color: #FF00FF;
+      text-transform: uppercase;
+      margin: 24px 0 8px;
+      border-bottom: 2px solid #330033;
+      padding-bottom: 4px;
+    }
+
+    .result {
+      padding: 5px 12px;
+      margin: 3px 0;
+      border-left: 4px solid;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .result.pass { border-color: #00CC00; color: #00CC00; }
+    .result.fail { border-color: #FF4444; color: #FF4444; }
+
+    .result .err {
+      font-size: 11px;
+      color: #FF8888;
+      margin-top: 2px;
+      padding-left: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 Meme Dungeon Tests</h1>
+  <div id="summary">Running...</div>
+  <div id="results"></div>
+
+  <!-- Game logic (no DOM dependencies) -->
+  <script src="js/characters.js"></script>
+  <script src="js/enemies.js"></script>
+  <script src="js/items.js"></script>
+  <script src="js/combat.js"></script>
+  <script src="js/dungeon.js"></script>
+
+  <!-- Shared test definitions -->
+  <script src="tests/tests.js"></script>
+
+  <!-- Run and render -->
+  <script>
+    const results = runAllTests();
+    const summaryEl = document.getElementById('summary');
+    const resultsEl = document.getElementById('results');
+
+    let passed = 0, failed = 0;
+
+    for (const r of results) {
+      if (r.suite) {
+        const h = document.createElement('div');
+        h.className = 'suite-name';
+        h.textContent = r.suite;
+        resultsEl.appendChild(h);
+        continue;
+      }
+      if (r.ok) passed++; else failed++;
+      const div = document.createElement('div');
+      div.className = 'result ' + (r.ok ? 'pass' : 'fail');
+      const icon = r.ok ? '✓' : '✗';
+      div.innerHTML = `<strong>${icon} ${r.name}</strong>`
+        + (r.error ? `<div class="err">→ ${r.error}</div>` : '');
+      resultsEl.appendChild(div);
+    }
+
+    const total = passed + failed;
+    if (failed === 0) {
+      summaryEl.textContent = `✓ ALL ${total} TESTS PASSED — BASED AND CORRECT`;
+      summaryEl.className = 'all-pass';
+    } else {
+      summaryEl.textContent = `✗ ${failed}/${total} FAILED — SKILL ISSUE`;
+      summaryEl.className = 'has-fail';
+    }
+  </script>
+</body>
+</html>
