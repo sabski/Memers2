@@ -53,7 +53,7 @@ const Renderer = (() => {
            sy > -TILE_SIZE && sy < VIEWPORT_H * TILE_SIZE;
   }
 
-  function render(dungeon, player) {
+  function render(dungeon, player, opponent) {
     currentCamera = getCamera(player, dungeon);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = COLORS.black;
@@ -62,6 +62,7 @@ const Renderer = (() => {
     drawTiles(dungeon, currentCamera);
     drawItems(dungeon, currentCamera);
     drawEnemies(dungeon, currentCamera);
+    if (opponent && opponent.alive) drawOpponent(opponent, currentCamera);
     drawPlayer(player, currentCamera);
   }
 
@@ -145,6 +146,18 @@ const Renderer = (() => {
     ctx.fillStyle = 'rgba(255, 255, 100, 0.15)';
     ctx.fillRect(sx, sy, TILE_SIZE, TILE_SIZE);
     drawEmoji(player.emoji, sx, sy, 26);
+  }
+
+  function drawOpponent(opponent, cam) {
+    const { sx, sy } = worldToScreen(opponent.x, opponent.y, cam);
+    if (!inViewport(sx, sy)) return;
+    ctx.fillStyle = 'rgba(0, 200, 255, 0.15)';
+    ctx.fillRect(sx, sy, TILE_SIZE, TILE_SIZE);
+    // Blue border to distinguish from local player
+    ctx.strokeStyle = 'rgba(0, 200, 255, 0.6)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(sx + 1, sy + 1, TILE_SIZE - 2, TILE_SIZE - 2);
+    drawEmoji(opponent.emoji, sx, sy, 26);
   }
 
   function drawEmoji(emoji, sx, sy, size) {

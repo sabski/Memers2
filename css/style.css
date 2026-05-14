@@ -444,6 +444,286 @@ body {
   animation: shake 0.3s ease-out;
 }
 
+/* ==================== MENU BUTTONS ==================== */
+
+.menu-btns {
+  display: flex;
+  gap: 16px;
+  margin: 8px 0;
+}
+
+.menu-btn {
+  font-family: Impact, sans-serif;
+  font-size: clamp(18px, 3vw, 28px);
+  background: #111;
+  color: #FFD700;
+  border: 4px solid #FFD700;
+  padding: 12px 28px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: transform 0.1s, background 0.1s;
+}
+
+.menu-btn:hover {
+  transform: scale(1.08) rotate(-1deg);
+  background: #2a2000;
+}
+
+.menu-btn-mp {
+  border-color: #00CCFF;
+  color: #00CCFF;
+}
+
+.menu-btn-mp:hover {
+  background: #001a22;
+}
+
+/* ==================== MODE SELECT ==================== */
+
+.mode-title {
+  font-family: Impact, sans-serif;
+  font-size: clamp(24px, 4vw, 48px);
+  color: #FF00FF;
+  -webkit-text-stroke: 2px #000;
+  text-shadow: 3px 3px 0 #000;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.mode-cards {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.mode-card {
+  border: 4px solid #333;
+  background: #111;
+  padding: 24px 20px;
+  cursor: pointer;
+  width: 200px;
+  text-align: center;
+  transition: transform 0.12s, background 0.12s, border-color 0.12s;
+}
+
+.mode-card:hover {
+  transform: scale(1.1) rotate(-2deg);
+  background: #1a001a;
+  border-color: #FF00FF;
+}
+
+.mode-emoji {
+  font-size: 56px;
+  margin-bottom: 8px;
+}
+
+.mode-name {
+  font-family: Impact, sans-serif;
+  font-size: 28px;
+  color: #FF00FF;
+  -webkit-text-stroke: 1px #000;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.mode-desc {
+  font-size: 13px;
+  color: #888;
+  line-height: 1.5;
+}
+
+/* ==================== LOBBY ==================== */
+
+.lobby-box {
+  background: #111;
+  border: 3px solid #333;
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  min-width: 320px;
+  margin-bottom: 12px;
+}
+
+.lobby-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.lobby-label {
+  font-family: Impact, sans-serif;
+  font-size: 18px;
+  color: #888;
+  letter-spacing: 2px;
+}
+
+.lobby-divider {
+  font-size: 14px;
+  color: #444;
+  letter-spacing: 2px;
+}
+
+.lobby-btn {
+  font-family: Impact, sans-serif;
+  font-size: 18px;
+  background: #FF00FF;
+  color: #000;
+  border: 3px solid #000;
+  padding: 8px 24px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: transform 0.1s, background 0.1s;
+}
+
+.lobby-btn:hover {
+  transform: scale(1.06);
+  background: #FF66FF;
+}
+
+.room-input {
+  font-family: Impact, sans-serif;
+  font-size: 24px;
+  background: #000;
+  color: #FFD700;
+  border: 3px solid #FF00FF;
+  padding: 8px 12px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  width: 180px;
+  outline: none;
+}
+
+.lobby-status {
+  font-family: Impact, sans-serif;
+  font-size: 18px;
+  color: #00FF88;
+  min-height: 28px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.room-display {
+  text-align: center;
+  padding: 12px;
+}
+
+.room-label {
+  font-size: 14px;
+  color: #888;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.room-code-big {
+  font-family: Impact, sans-serif;
+  font-size: clamp(36px, 6vw, 60px);
+  color: #FFD700;
+  -webkit-text-stroke: 2px #000;
+  letter-spacing: 8px;
+}
+
+.room-hint {
+  font-size: 13px;
+  color: #555;
+  margin-top: 8px;
+}
+
+/* ==================== WAITING ==================== */
+
+.waiting-emoji {
+  font-size: 64px;
+  margin: 8px 0;
+}
+
+.waiting-room {
+  font-family: Impact, sans-serif;
+  font-size: clamp(20px, 3vw, 32px);
+  color: #888;
+  letter-spacing: 2px;
+  margin: 8px 0;
+}
+
+.waiting-hint {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+.back-btn {
+  font-family: Impact, sans-serif;
+  font-size: 16px;
+  background: transparent;
+  color: #555;
+  border: 2px solid #333;
+  padding: 8px 20px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: color 0.1s, border-color 0.1s;
+  margin-top: 8px;
+}
+
+.back-btn:hover {
+  color: #FF4444;
+  border-color: #FF4444;
+}
+
+/* ==================== MP HUD ==================== */
+
+#opponent-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-left: 2px solid #00CCFF;
+  padding-left: 10px;
+}
+
+#opponent-text {
+  font-size: 13px;
+  color: #00CCFF;
+}
+
+#opponent-bar {
+  width: 120px;
+  height: 10px;
+  background: #002233;
+  border: 2px solid #000;
+}
+
+#opponent-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, #0066FF, #00CCFF);
+  transition: width 0.25s ease-out;
+}
+
+#turn-indicator {
+  font-family: Impact, sans-serif;
+  font-size: 18px;
+  padding: 4px 12px;
+  border: 2px solid;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+#turn-indicator.your-turn {
+  color: #00FF88;
+  border-color: #00FF88;
+  animation: blink 0.8s step-end infinite;
+}
+
+#turn-indicator.their-turn {
+  color: #FF4444;
+  border-color: #FF4444;
+}
+
 /* ==================== SCROLLBAR HIDE ==================== */
 
 ::-webkit-scrollbar { display: none; }
