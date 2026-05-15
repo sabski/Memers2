@@ -16,14 +16,27 @@ const MP = (() => {
   let _onPresence = null;
   let _myId = null;
 
+  // Load Supabase JS on demand so it doesn't block page startup
+  function loadSupabase() {
+    return new Promise((resolve, reject) => {
+      if (window.supabase) { resolve(); return; }
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+      script.onload = () => { if (window.supabase) resolve(); else reject(new Error('supabase not defined after load')); };
+      script.onerror = () => reject(new Error('Failed to load Supabase (check internet connection)'));
+      document.head.appendChild(script);
+    });
+  }
+
   function getClient() {
     if (!client) {
-      client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }
     return client;
   }
 
-  function _subscribe(roomCode, myNum) {
+  async function _subscribe(roomCode, myNum) {
+    await loadSupabase();
     _myId = `p${myNum}_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
     const sb = getClient();
     channel = sb.channel(`meme-dungeon-${roomCode}`, {
